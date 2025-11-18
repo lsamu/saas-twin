@@ -66,12 +66,8 @@ const handleScroll = () => {
 
 onMounted(() => {
   if (canvasWrapper.value) {
-    const { clientWidth, clientHeight } = canvasWrapper.value;
-    const scrollLeft = (canvasWidth - clientWidth) / 2;
-    const scrollTop = (canvasHeight - clientHeight) / 2;
-
-    canvasWrapper.value.scrollLeft = scrollLeft > 0 ? scrollLeft : 0;
-    canvasWrapper.value.scrollTop = scrollTop > 0 ? scrollTop : 0;
+    canvasWrapper.value.scrollLeft = 0;
+    canvasWrapper.value.scrollTop = 0;
   }
 });
 
@@ -120,5 +116,6 @@ const onDragEnd = (e, id) => {
 }
 .canvas-container {
   position: relative;
+  background: white;
 }
 </style>
