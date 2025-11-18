@@ -1,34 +1,68 @@
 <template>
-  <div
-    class="canvas-container"
-    @dragover.prevent
-    @drop="onDrop"
-  >
-    <es-drager
-      v-for="element in components"
-      :key="element.id"
-      v-model:x="element.props.x"
-      v-model:y="element.props.y"
-      :w="element.props.w"
-      :h="element.props.h"
-      @drag-end="(e) => onDragEnd(e, element.id)"
+  <div class="canvas-wrapper" ref="canvasWrapper" @scroll="handleScroll">
+    <SketchRule
+      :thick="thick"
+      :scale="scale"
+      :width="canvasWidth"
+      :height="canvasHeight"
+      :startX="startX"
+      :startY="startY"
+      :lines="lines"
+      class="sketch-rule"
     >
-      <RenderComponent :componentData="element" />
-    </es-drager>
+      <div
+        class="canvas-container"
+        @dragover.prevent
+        @drop="onDrop"
+        :style="{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }"
+      >
+        <es-drager
+          v-for="element in components"
+          :key="element.id"
+          v-model:x="element.props.x"
+          v-model:y="element.props.y"
+          :w="element.props.w"
+          :h="element.props.h"
+          @drag-end="(e) => onDragEnd(e, element.id)"
+        >
+          <RenderComponent :componentData="element" />
+        </es-drager>
+      </div>
+    </SketchRule>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import EsDrager from 'es-drager';
 import 'es-drager/lib/style.css';
 import { useEditorStore } from '@/store/modules/editorStore';
 import RenderComponent from '../canvas-render/index.vue';
+import SketchRule from "vue3-sketch-ruler";
+import "vue3-sketch-ruler/lib/style.css";
 
 const editorStore = useEditorStore();
 
 const components = computed(() => editorStore.components);
+
+// Ruler settings
+const thick = 20;
+const scale = ref(1);
+const canvasWidth = 1920;
+const canvasHeight = 1080;
+const startX = ref(0);
+const startY = ref(0);
+const lines = ref({ h: [], v: [] });
+const canvasWrapper = ref(null);
+
+const handleScroll = () => {
+    if(canvasWrapper.value){
+        const { scrollLeft, scrollTop } = canvasWrapper.value;
+        startX.value = -scrollLeft / scale.value;
+        startY.value = -scrollTop / scale.value;
+    }
+};
 
 const onDrop = (event) => {
   const componentData = JSON.parse(event.dataTransfer.getData('application/json'));
@@ -60,9 +94,19 @@ const onDragEnd = (e, id) => {
 </script>
 
 <style scoped>
-.canvas-container {
+.canvas-wrapper {
   width: 100%;
   height: 100%;
+  overflow: auto;
+  position: relative;
+}
+.sketch-rule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; /* Make sure ruler is on top */
+}
+.canvas-container {
   background: #f0f2f5;
   position: relative;
 }

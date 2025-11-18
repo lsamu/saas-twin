@@ -15,7 +15,8 @@
     "pinia": "^2.1.0",
     "splitpanes": "^4.0.4",
     "uuid": "^13.0.0",
-    "vue": "^3.3.0"
+    "vue": "^3.3.0",
+    "vue3-sketch-ruler": "^2.2.11"
   },
   "devDependencies": {
     "@interactjs/types": "^1.10.17",
