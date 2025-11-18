@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import EsDrager from 'es-drager';
 import 'es-drager/lib/style.css';
@@ -63,6 +63,17 @@ const handleScroll = () => {
         startY.value = -scrollTop / scale.value;
     }
 };
+
+onMounted(() => {
+  if (canvasWrapper.value) {
+    const { clientWidth, clientHeight } = canvasWrapper.value;
+    const scrollLeft = (canvasWidth - clientWidth) / 2;
+    const scrollTop = (canvasHeight - clientHeight) / 2;
+
+    canvasWrapper.value.scrollLeft = scrollLeft > 0 ? scrollLeft : 0;
+    canvasWrapper.value.scrollTop = scrollTop > 0 ? scrollTop : 0;
+  }
+});
 
 const onDrop = (event) => {
   const componentData = JSON.parse(event.dataTransfer.getData('application/json'));
@@ -99,6 +110,7 @@ const onDragEnd = (e, id) => {
   height: 100%;
   overflow: auto;
   position: relative;
+  background-color: #f0f2f5;
 }
 .sketch-rule {
   position: absolute;
@@ -107,7 +119,6 @@ const onDragEnd = (e, id) => {
   z-index: 2; /* Make sure ruler is on top */
 }
 .canvas-container {
-  background: #f0f2f5;
   position: relative;
 }
 </style>
