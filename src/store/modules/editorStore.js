@@ -1,75 +1,46 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
 
-export const useEditorStore = defineStore('editor', () => {
-  // =================================================================================...
-  // State
-  // =================================================================================...
+export const useEditorStore = defineStore('editor', {
+  state: () => ({
+    // 画布中的所有组件
+    components: [],
+    // 当前选中的组件ID
+    activeComponentId: null,
+  }),
 
-  // 画布上的所有组件数据
-  const components = ref([]);
+  getters: {
+    // 获取当前选中的组件
+    activeComponent: (state) => {
+      return state.components.find(c => c.id === state.activeComponentId);
+    },
+  },
 
-  // 当前选中的组件的 ID
-  const activeComponentId = ref(null);
+  actions: {
+    // 添加一个组件到画布
+    addComponent(component) {
+      this.components.push(component);
+    },
 
-  // 画布设置
-  const canvasSettings = ref({
-    zoom: 1, // 缩放比例
-    showGrid: true, // 是否显示网格
-    gridSize: 20, // 网格大小
-  });
+    // 更新所有组件
+    updateComponents(components) {
+      this.components = components;
+    },
 
-  // =================================================================================...
-  // Getters (Computed Properties)
-  // =================================================================================...
+    // 设置当前选中的组件
+    setActiveComponent(componentId) {
+      this.activeComponentId = componentId;
+    },
 
-  // 获取当前选中的组件对象
-  const activeComponent = computed(() => {
-    return components.value.find(c => c.id === activeComponentId.value);
-  });
-
-  // =================================================================================...
-  // Actions
-  // =================================================================================...
-
-  /**
-   * 添加一个新组件到画布
-   * @param {object} component - 组件数据对象
-   */
-  function addComponent(component) {
-    components.value.push(component);
-    // 注意：历史记录的添加现在由 historyStore 负责
-  }
-
-  /**
-   * 设置当前选中的组件
-   * @param {string} id - 组件的 ID
-   */
-  function setActiveComponent(id) {
-    activeComponentId.value = id;
-  }
-
-  /**
-   * 更新组件的属性
-   * @param {string} id - 要更新的组件 ID
-   * @param {object} props - 新的属性
-   */
-  function updateComponentProps(id, props) {
-    const component = components.value.find(c => c.id === id);
-    if (component) {
-      Object.assign(component.props, props);
-      // 注意：历史记录的添加现在由 historyStore 负责
-    }
-  }
-
-  // 暴露 state, getters, 和 actions
-  return {
-    components,
-    activeComponentId,
-    canvasSettings,
-    activeComponent,
-    addComponent,
-    setActiveComponent,
-    updateComponentProps,
-  };
+    // 更新组件属性
+    updateComponentProps({ id, props }) {
+      const component = this.components.find(c => c.id === id);
+      if (component) {
+        if(component.props) {
+          Object.assign(component.props, props);
+        } else {
+          component.props = props;
+        }
+      }
+    },
+  },
 });

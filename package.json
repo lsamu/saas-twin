@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "element-plus": "^2.3.0",
-    "interactjs": "^1.10.17",
+    "es-drager": "^1.3.2",
+    "interactjs": "^1.10.27",
     "lodash.clonedeep": "^4.5.0",
     "pinia": "^2.1.0",
-    "vue": "^3.3.0",
-    "vuedraggable": "^4.1.0"
+    "splitpanes": "^4.0.4",
+    "uuid": "^13.0.0",
+    "vue": "^3.3.0"
   },
   "devDependencies": {
     "@interactjs/types": "^1.10.17",

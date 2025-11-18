@@ -1,22 +1,27 @@
 <template>
   <el-container class="full-height">
     <el-header class="header">SaaS 数字孪生平台</el-header>
-    <el-container>
-      <el-aside width="200px" class="left-panel">
-        组件物料区
-      </el-aside>
-      <el-main class="main-canvas">
-        画布编辑区
-      </el-main>
-      <el-aside width="280px" class="right-panel">
-        属性配置区
-      </el-aside>
-    </el-container>
+    <splitpanes class="default-theme" style="height: calc(100% - 60px)">
+      <pane size="15">
+        <ComponentList />
+      </pane>
+      <pane size="70">
+        <Canvas />
+      </pane>
+      <pane size="15">
+        <PropEditor />
+      </pane>
+    </splitpanes>
+    <el-footer class="footer">© 2024 Your Company. All rights reserved.</el-footer>
   </el-container>
 </template>
 
 <script setup>
-// 脚本区暂时为空
+import { Splitpanes, Pane } from 'splitpanes';
+import 'splitpanes/dist/splitpanes.css';
+import ComponentList from './components/editor/component-list/index.vue';
+import Canvas from './components/editor/canvas/index.vue';
+import PropEditor from './components/editor/prop-editor/index.vue';
 </script>
 
 <style>
@@ -29,6 +34,8 @@ html, body, #app {
 
 .full-height {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -40,13 +47,15 @@ html, body, #app {
   font-weight: bold;
 }
 
-.left-panel, .right-panel {
-  border: 1px solid #EBEEF5;
-  padding: 10px;
+.footer {
+  background-color: #f2f2f2;
+  color: #666;
+  line-height: 40px;
+  text-align: center;
+  font-size: 12px;
 }
 
-.main-canvas {
-  background-color: #F2F6FC;
-  border: 1px solid #EBEEF5;
+.splitpanes.default-theme .splitpanes__pane {
+    background-color: white;
 }
 </style>
